@@ -283,4 +283,4 @@ if __name__ == "__main__":
         print("Usage: python MinimalImageViewer.py imagefile.jpg")
         print("       python MinimalImageViewer.py myphotofolder")
         print("Navigate in a directory with the keyboard arrow keys or mouse scroll")
-sys.exit(main())
+    sys.exit(main())
