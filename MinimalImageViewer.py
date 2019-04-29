@@ -19,7 +19,7 @@ def humanBytes(x, p = 1, k = 1024):
 class MinimalViewer:
 
     def __init__(self, filelist, index = 0):
-
+        self.angle = 0
         self.files = filelist
         self.index = index
         self.filename = False
@@ -199,14 +199,53 @@ class MinimalViewer:
         if key == 'Left':
             self.previousImage()
             win.emit_stop_by_name("key-press-event")
+            self.angle = 0
             return True
         elif key == 'Right':
             self.nextImage()
             win.emit_stop_by_name("key-press-event")
+            self.angle = 0
             return True
         elif key == 'f':
             self.fullscreen_mode()
+        elif key == 'r':
+        
+            scrolledAllocation = self.scrolledwindow1.get_allocation()
+
+            # Scale
+            w = float(self.image_width)
+            h = float(self.image_height)
+            totalscale = 1.0
+
+            if h > scrolledAllocation.height:
+                scale = scrolledAllocation.height / h
+                w *= scale
+                h *= scale
+
+            if w > scrolledAllocation.width:
+                scale = scrolledAllocation.width / w
+                w *= scale
+                h *= scale
+  
+            w = int(math.floor(w))
+            h = int(math.floor(h))
+
+            if self.angle == 270 or self.angle == 180 or self.angle == 90 or self.angle == 0:
+                self.angle += 90
             
+            if self.angle == 90 or self.angle == 270:
+                w_old = w
+                h_old = h
+                w = h
+                h = w_old
+            
+            if self.angle == 360:
+                self.angle = 0 
+                
+            pixbuf = self.pixbuf.rotate_simple(self.angle)
+            
+            pixbuf = pixbuf.scale_simple(w, h, GdkPixbuf.InterpType.BILINEAR)
+            self.image.set_from_pixbuf(pixbuf)
             
     def _on_resize(self, window=None, force=False):
         # Check whether a resize is possible/needed
